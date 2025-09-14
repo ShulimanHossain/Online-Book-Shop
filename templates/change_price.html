@@ -1,0 +1,159 @@
+{% extends "base.html" %}
+{% block content %}
+<style>
+  /* ===== Full-page background image (two.jpg) ===== */
+  html, body { height: 100%; }
+  body { background: transparent !important; } /* override base body bg */
+  html::before{
+    content:"";
+    position: fixed;
+    inset: 0;
+    background: url("{{ url_for('static', filename='images/two.jpg') }}") center / cover no-repeat fixed;
+    z-index: 0;             /* below navbar, sidebar, and content */
+    pointer-events: none;
+  }
+
+  /* ===== Sidebar (kept opaque for readability) ===== */
+  .sidebar {
+      width: 240px;
+      min-height: 100vh;
+      background: linear-gradient(to bottom right, #1f2937, #111827);
+      padding: 1rem;
+      position: fixed;
+      top: 0;
+      left: 0;
+      z-index: 2; /* above bg image */
+  }
+  .sidebar h4 {
+      color: #fff;
+      font-size: 1.25rem;
+      font-weight: bold;
+      margin-bottom: 1rem;
+  }
+  .sidebar a {
+      display: block;
+      color: #d1d5db;
+      padding: 0.6rem 1rem;
+      border-radius: 0.5rem;
+      text-decoration: none;
+      margin-bottom: 0.4rem;
+      transition: all 0.3s;
+  }
+  .sidebar a:hover { background: #374151; color: #fff; }
+  .sidebar a.active { background: #2563eb; color: #fff; font-weight: 600; }
+
+  /* ===== Content over the photo ===== */
+  .content {
+      margin-left: 260px;
+      padding: 2rem;
+      padding-top: 80px;      /* room for fixed navbar from base.html */
+      min-height: 100vh;
+      font-family: 'Segoe UI', Arial, sans-serif;
+      position: relative;
+      z-index: 1;             /* above bg image */
+      background: transparent !important;  /* remove prior gradient */
+  }
+
+  /* Heading readable on photo */
+  h1 {
+      text-align: center;
+      color: #ffffff;
+      margin-bottom: 20px;
+      text-shadow: 0 2px 6px rgba(0,0,0,.35);
+  }
+
+  /* ===== Transparent / glass output box (form + message) ===== */
+  .glass-card {
+      background: rgba(255,255,255,0.22);      /* transparent */
+      -webkit-backdrop-filter: blur(10px);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255,255,255,0.35);
+      border-radius: 12px;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.18);
+      max-width: 500px;
+      margin: 0 auto;
+      padding: 25px;
+      color: #111827; /* dark text on light-ish glass */
+  }
+
+  /* Inputs inside glass */
+  .glass-card input {
+      width: 100%;
+      padding: 10px 12px;
+      margin-top: 10px;
+      border: 1px solid rgba(0,0,0,0.15);
+      border-radius: 6px;
+      background: rgba(255,255,255,0.75);
+      transition: border-color .3s, box-shadow .3s, background .3s;
+  }
+  .glass-card input:focus {
+      border-color: #007bff;
+      box-shadow: 0 0 0 3px rgba(0,123,255,0.2);
+      outline: none;
+      background: rgba(255,255,255,0.95);
+  }
+
+  /* Button */
+  .glass-card button {
+      margin-top: 20px;
+      width: 100%;
+      padding: 12px;
+      background: #f59e0b;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: background .3s, transform .2s;
+  }
+  .glass-card button:hover {
+      background: #0e91c5;
+      transform: scale(1.02);
+  }
+
+  /* Transparent message */
+  .message {
+      font-weight: 600;
+      margin-bottom: 20px;
+      padding: 12px 16px;
+      border-radius: 10px;
+      max-width: 500px;
+      margin: 0 auto 20px auto;
+      text-align: center;
+
+      background: rgba(255,255,255,0.22);
+      -webkit-backdrop-filter: blur(10px);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255,255,255,0.35);
+      color: #ffffff;
+      text-shadow: 0 1px 3px rgba(0,0,0,.35);
+  }
+</style>
+
+<!-- Sidebar -->
+<div class="sidebar">
+  <h4>Admin Dashboard</h4>
+  <a href="{{ url_for('admin_dashboard') }}/revenue" class="{% if action=='revenue' %}active{% endif %}">Revenue</a>
+  <a href="{{ url_for('admin_dashboard') }}/add" class="{% if action=='add' %}active{% endif %}">Add Book</a>
+  <a href="{{ url_for('admin_dashboard') }}/delete" class="{% if action=='delete' %}active{% endif %}">Delete Book</a>
+  <a href="{{ url_for('admin_dashboard') }}/changeprice" class="{% if action=='changeprice' %}active{% endif %}">Change Price</a>
+  <a href="{{ url_for('admin_dashboard') }}/updatestock" class="{% if action=='updatestock' %}active{% endif %}">Update Stock</a>
+  <a href="{{ url_for('admin_dashboard') }}/userdetails" class="{% if action=='userdetails' %}active{% endif %}">User Details</a>
+  <a href="{{ url_for('admin_dashboard') }}/orderdetails" class="{% if action=='orderdetails' %}active{% endif %}">Order Details</a>
+  <a href="{{ url_for('admin_dashboard') }}/changepass" class="{% if action=='changepass' %}active{% endif %}">Change Admin Password</a>
+</div>
+
+<!-- Main Content -->
+<div class="content">
+  <h1>Change Book Price</h1>
+
+  {% if message %}<div class="message">{{ message }}</div>{% endif %}
+
+  <form method="post" class="glass-card">
+      <input type="text" name="book_id" placeholder="Book ID" required>
+      <input type="number" name="newprice" placeholder="New Price" step="0.01" required>
+      <button type="submit">Update Price</button>
+  </form>
+</div>
+{% endblock %}

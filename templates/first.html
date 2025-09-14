@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Book Store Login</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f4f4;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            overflow: hidden;
+        }
+        .login-container {
+            background: #fff;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0px 0px 15px rgba(0,0,0,0.2);
+            width: 350px;
+            opacity: 0;
+            transform: translateY(-50px);
+            animation: fadeIn 1s forwards;
+        }
+        h2 {
+            text-align: center;
+            margin-bottom: 25px;
+            color: #333;
+            animation: slideDown 0.8s ease forwards;
+        }
+        input, select {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            font-size: 14px;
+            transition: 0.3s;
+        }
+        input:focus, select:focus {
+            border-color: #007bff;
+            box-shadow: 0 0 8px rgba(0,123,255,0.3);
+        }
+        button {
+            width: 100%;
+            padding: 12px;
+            margin-top: 10px;
+            background: #007bff;
+            color: #fff;
+            font-size: 16px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: 0.3s;
+            transform: scale(1);
+        }
+        button:hover {
+            background: #0056b3;
+            transform: scale(1.05);
+        }
+        .error {
+            color: red;
+            text-align: center;
+            margin-top: 10px;
+            animation: shake 0.5s;
+        }
+
+        /* Password toggle */
+        .password-container {
+            position: relative;
+        }
+        .toggle-password {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            color: #007bff;
+            font-weight: bold;
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes shake {
+            0% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            50% { transform: translateX(5px); }
+            75% { transform: translateX(-5px); }
+            100% { transform: translateX(0); }
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <h2>Login</h2>
+        <form method="POST">
+            <input type="text" name="userid" placeholder="Username" required>
+            
+            <div class="password-container">
+                <input type="password" id="password" name="password" placeholder="Password" required>
+                <span id="togglePassword" class="toggle-password">Show</span>
+            </div>
+
+            <select name="role" required>
+                <option value="" disabled selected>Select Role</option>
+                <option value="admin">Admin</option>
+                <option value="member">Member</option>
+            </select>
+
+            <button type="submit">Login</button>
+        </form>
+        {% if msg %}
+        <p class="error">{{ msg }}</p>
+        {% endif %}
+    </div>
+
+    <script>
+        // Submit form on Enter key
+        const form = document.querySelector('form');
+        form.addEventListener('keydown', function(event){
+            if(event.key === "Enter"){
+                form.submit();
+            }
+        });
+
+        // Password show/hide toggle
+        const password = document.getElementById('password');
+        const toggle = document.getElementById('togglePassword');
+        toggle.addEventListener('click', () => {
+            if(password.type === "password"){
+                password.type = "text";
+                toggle.textContent = "Hide";
+            } else {
+                password.type = "password";
+                toggle.textContent = "Show";
+            }
+        });
+    </script>
+</body>
+</html>

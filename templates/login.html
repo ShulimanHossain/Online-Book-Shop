@@ -1,0 +1,137 @@
+{% extends "base.html" %}
+{% block content %}
+
+<!-- Fullscreen background layer (covers entire viewport) -->
+<div class="bg-fullscreen" aria-hidden="true"></div>
+
+<!-- Login content -->
+<div class="login-container flex items-center justify-center">
+  <div class="login-card animate-fadeIn rounded-lg p-6 sm:p-8 w-full">
+    <h1 class="login-title text-2xl sm:text-3xl font-bold text-indigo-600 mb-4 animate-bounce">Login</h1>
+
+    {% if message %}
+      <div class="message bg-red-100 text-red-700 px-4 py-2 rounded mb-4">{{ message }}</div>
+    {% endif %}
+
+    <form method="post" onsubmit="return validateLoginForm(this);" class="space-y-4">
+      <div class="form-group">
+        <label class="form-label block font-medium mb-1">Role</label>
+        <select name="role" required class="form-input w-full border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:border-indigo-500">
+          <option value="member" {% if request.form.get('role')=='member' %}selected{% endif %}>Member</option>
+          <option value="admin" {% if request.form.get('role')=='admin' %}selected{% endif %}>Admin</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label block font-medium mb-1">User ID</label>
+        <input type="text" name="userid" required class="form-input w-full border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:border-indigo-500">
+      </div>
+
+      <div class="form-group">
+        <label class="form-label block font-medium mb-1">Password</label>
+        <input type="password" name="password" required class="form-input w-full border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:border-indigo-500">
+      </div>
+
+      <div class="flex items-center justify-between mt-3">
+        <button type="submit" class="btn-submit text-white font-semibold rounded transition duration-200">
+          Login
+        </button>
+        <a href="{{ url_for('register') }}" class="btn-link text-indigo-600 hover:underline font-medium">Create account</a>
+      </div>
+    </form>
+  </div>
+</div>
+
+<style>
+/* Base reset */
+html, body { height: 100%; margin: 0; }
+body { font-family: 'Inter', sans-serif; }
+
+/* Fixed full-bleed background layer */
+.bg-fullscreen{
+  position: fixed;
+  inset: 0;
+  background: url("{{ url_for('static', filename='images/two.jpg') }}") center / cover no-repeat;
+  z-index: 0;
+  pointer-events: none;
+}
+
+/* Make common wrappers transparent (safety net) */
+:where(main, .container, .content, .page, .page-wrapper, #content){
+  background: transparent !important;
+}
+
+/* Content stack above the background */
+.login-container{
+  position: relative;
+  z-index: 1;
+  min-height: 70dvh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem 1rem;
+}
+
+/* ===== Bigger login box ===== */
+.login-card{
+  background-color: rgba(255,255,255,0.2);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  border-radius: 0.75rem;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.25);
+
+  /* Wider & responsive:
+     min 28rem, grows with viewport, caps at 42rem (~672px) */
+  max-width: clamp(28rem, 60vw, 42rem);
+
+  /* Roomier padding */
+  padding: 2rem 2.25rem;
+}
+
+/* Title a touch larger for the bigger card */
+.login-title{ font-size: 1.75rem; font-weight: 800; color:#6366f1; }
+
+/* ===== Larger inputs for the bigger card ===== */
+.form-input{
+  width: 100%;
+  border: 1px solid #d1d5db;
+  border-radius: 0.5rem;
+  padding: 0.8rem 1rem;       /* taller inputs */
+  font-size: 1.05rem;         /* slightly larger text */
+  background-color: rgba(255,255,255,0.55);
+  -webkit-backdrop-filter: blur(5px);
+  backdrop-filter: blur(5px);
+  transition: box-shadow .2s, border-color .2s;
+}
+.form-input:focus{
+  outline: none;
+  border-color: #6366f1;
+  box-shadow: 0 0 0 2px rgba(99,102,241,0.3);
+}
+
+/* ===== Larger button to match ===== */
+.btn-submit{
+  background: linear-gradient(90deg, #8b5cf6, #6366f1);
+  padding: 0.85rem 1.5rem;   /* bigger button */
+  font-size: 1.05rem;
+  border: 0;
+}
+.btn-submit:hover{
+  background: linear-gradient(90deg, #7c3aed, #4f46e5);
+  transform: scale(1.03);
+  box-shadow: 0 6px 20px rgba(99,102,241,0.4);
+}
+
+/* Link */
+.btn-link{ text-decoration:none; }
+.btn-link:hover{ text-decoration:underline; }
+
+/* Animations */
+@keyframes bounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+.animate-bounce{animation:bounce 1s infinite;}
+@keyframes fadeIn{0%{opacity:0;transform:translateY(20px)}100%{opacity:1;transform:translateY(0)}}
+.animate-fadeIn{animation:fadeIn .7s ease forwards;}
+
+.message{ padding: .5rem 1rem; border-radius: .375rem; }
+</style>
+{% endblock %}

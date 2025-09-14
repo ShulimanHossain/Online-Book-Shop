@@ -1,0 +1,125 @@
+{% extends "base.html" %}
+{% block title %}Admin Dashboard{% endblock %}
+
+{% block content %}
+
+<!-- Fullscreen background image -->
+<div class="bg-fullscreen" aria-hidden="true"></div>
+
+<style>
+  body { background-color: #f8f9fa; font-family: 'Segoe UI', Arial, sans-serif; }
+  .navbar { border-radius: 8px; }
+  .card { border-radius: 12px; box-shadow: 0 2px 6px rgba(0,0,0,0.08); }
+  footer { margin-top: 2rem; padding: 1rem; text-align: center; color: #6c757d; }
+
+  /* Sidebar */
+  .sidebar{
+    width:240px;min-height:100vh;background:linear-gradient(to bottom right,#1f2937,#111827);
+    padding:1rem;position:fixed;top:0;left:0;z-index:2
+  }
+  .sidebar h4{color:#fff;font-size:1.25rem;font-weight:bold;margin-bottom:1rem}
+  .sidebar a{display:block;color:#d1d5db;padding:.6rem 1rem;border-radius:.5rem;text-decoration:none;margin-bottom:.4rem;transition:all .3s}
+  .sidebar a:hover{background:#374151;color:#fff}
+  .sidebar a.active{background:#2563eb;color:#fff;font-weight:600}
+
+  /* Content area (transparent so bg image shows) */
+  .content{
+    margin-left:260px;padding:2rem;min-height:100vh;position:relative;z-index:1;
+    background:transparent!important;padding-top:80px /* space for fixed navbar */
+  }
+
+  /* Fullscreen background image */
+  .bg-fullscreen{
+    position:fixed;inset:0;background:url("{{ url_for('static', filename='images/two.jpg') }}") center/cover no-repeat fixed;
+    z-index:0;pointer-events:none
+  }
+
+  /* ===== GLASS PANEL for the output box ===== */
+  .glass-panel{
+    max-width: 900px;
+    margin: 0 auto;
+    background: rgba(255,255,255,0.55);        /* transparency */
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);               /* glass blur */
+    border: 1px solid rgba(255,255,255,0.35);  /* subtle border */
+    border-radius: 16px;
+    box-shadow: 0 12px 32px rgba(0,0,0,0.18);
+    padding: 1.25rem;
+  }
+
+  /* Table inside glass panel */
+  table.table-auto{
+    width:100%;
+    border-collapse:separate;
+    border-spacing:0;
+    background: transparent;          /* let the glass show */
+    border-radius: 12px;
+    overflow: hidden;
+  }
+  thead tr{
+    background: rgba(243,244,246,0.85);  /* translucent header */
+  }
+  th, td{ padding:12px; text-align:center; }
+  tbody tr{
+    background: rgba(255,255,255,0.65);  /* light translucent rows */
+    border-bottom: 1px solid rgba(0,0,0,0.06);
+  }
+  tbody tr:nth-child(even){
+    background: rgba(255,255,255,0.5);   /* alternate translucency */
+  }
+
+  /* Optional: lighter heading over photo */
+  h2.page-title{
+    color:#f1f5f9;
+    text-shadow:0 1px 3px rgba(0,0,0,.45);
+    margin-bottom: 1rem;
+    text-align:center;
+  }
+</style>
+
+<!-- Sidebar -->
+<div class="sidebar">
+  <h4>Admin Dashboard</h4>
+  <a href="{{ url_for('admin_dashboard') }}/revenue" class="{% if action=='revenue' %}active{% endif %}">Revenue</a>
+  <a href="{{ url_for('admin_dashboard') }}/add" class="{% if action=='add' %}active{% endif %}">Add Book</a>
+  <a href="{{ url_for('admin_dashboard') }}/delete" class="{% if action=='delete' %}active{% endif %}">Delete Book</a>
+  <a href="{{ url_for('admin_dashboard') }}/changeprice" class="{% if action=='changeprice' %}active{% endif %}">Change Price</a>
+  <a href="{{ url_for('admin_dashboard') }}/updatestock" class="{% if action=='updatestock' %}active{% endif %}">Update Stock</a>
+  <a href="{{ url_for('admin_dashboard') }}/userdetails" class="{% if action=='userdetails' %}active{% endif %}">User Details</a>
+  <a href="{{ url_for('admin_dashboard') }}/orderdetails" class="{% if action=='orderdetails' %}active{% endif %}">Order Details</a>
+  <a href="{{ url_for('admin_dashboard') }}/changepass" class="{% if action=='changepass' %}active{% endif %}">Change Admin Password</a>
+</div>
+
+<!-- Main Content -->
+<div class="col-md-9 content">
+  <h2 class="page-title">Order Details</h2>
+
+  {% if orderinfo %}
+  <div class="glass-panel">
+    <div class="overflow-x-auto" style="width:100%;">
+      <table class="table-auto w-full text-center">
+        <thead>
+          <tr>
+            {% for k in orderinfo[0].keys() %}
+              <th>{{ k | replace('_',' ') | capitalize }}</th>
+            {% endfor %}
+          </tr>
+        </thead>
+        <tbody>
+          {% for row in orderinfo %}
+            <tr>
+              {% for v in row.values() %}
+                <td>{{ v }}</td>
+              {% endfor %}
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+  {% else %}
+    <p class="text-center" style="color:#f8fafc;text-shadow:0 1px 2px rgba(0,0,0,.5);">No orders found.</p>
+  {% endif %}
+</div>
+
+{% endblock %}

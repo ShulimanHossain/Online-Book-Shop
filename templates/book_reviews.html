@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block content %}
+<h1 class="h4 mb-3">{{ book.title }}</h1>
+<p class="text-muted">by {{ book.name }}</p>
+
+<h2 class="h5 mt-4">Reviews</h2>
+
+{% if reviews %}
+    <div class="list-group">
+    {% for r in reviews %}
+        <div class="list-group-item mb-2">
+            <div><strong>{{ r.username }}</strong> - {{ r.rating }} ★</div>
+            <div>{{ r.review_text }}</div>
+            <small class="text-muted">{{ r.review_date }}</small>
+        </div>
+    {% endfor %}
+    </div>
+{% else %}
+    <p class="text-muted">No reviews yet for this book.</p>
+{% endif %}
+{% endblock %}

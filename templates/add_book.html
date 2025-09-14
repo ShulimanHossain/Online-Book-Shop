@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Add Book</title>
+    <style>
+        /* ===== Full-page background image (two.jpg) ===== */
+        html, body { height: 100%; margin: 0; }
+        body { background: transparent !important; font-family: 'Segoe UI', Arial, sans-serif; }
+        html::before{
+            content:"";
+            position: fixed;
+            inset: 0;
+            background: url("{{ url_for('static', filename='images/two.jpg') }}") center / cover no-repeat fixed;
+            z-index: 0;             /* below sidebar and content */
+            pointer-events: none;
+        }
+
+        /* ===== Sidebar (kept opaque for readability) ===== */
+        .sidebar {
+            width: 240px;
+            min-height: 100vh;
+            background: linear-gradient(to bottom right, #1f2937, #111827);
+            padding: 1rem;
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 2; /* above bg image */
+        }
+        .sidebar h4 {
+            color: #fff;
+            font-size: 1.25rem;
+            font-weight: bold;
+            margin-bottom: 1rem;
+        }
+        .sidebar a {
+            display: block;
+            color: #d1d5db;
+            padding: 0.6rem 1rem;
+            border-radius: 0.5rem;
+            text-decoration: none;
+            margin-bottom: 0.4rem;
+            transition: all 0.3s;
+        }
+        .sidebar a:hover { background: #374151; color: #fff; }
+        .sidebar a.active { background: #2563eb; color: #fff; font-weight: 600; }
+
+        /* ===== Content over the photo ===== */
+        .content {
+            margin-left: 260px;
+            padding: 2rem;
+            min-height: 100vh;
+            position: relative;
+            z-index: 1;                 /* above bg image */
+            background: transparent !important;  /* remove old gradient */
+        }
+
+        /* Heading readable on photo */
+        h2 {
+            text-align: center;
+            color: #ffffff;
+            margin-bottom: 20px;
+            text-shadow: 0 2px 6px rgba(0,0,0,.35);
+        }
+
+        /* ===== Glass/transparent output box ===== */
+        .glass-card {
+            background: rgba(255,255,255,0.22);
+            -webkit-backdrop-filter: blur(10px);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.35);
+            border-radius: 12px;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.18);
+            max-width: 550px;
+            margin: 0 auto;
+            padding: 25px;
+            color: #111827; /* dark text on light-ish glass */
+        }
+
+        /* Inputs inside glass card */
+        .glass-card label {
+            display: block;
+            margin-top: 15px;
+            font-weight: 600;
+            color: #222;
+        }
+        .glass-card input {
+            width: 100%;
+            padding: 10px 12px;
+            margin-top: 6px;
+            border: 1px solid rgba(0,0,0,0.15);
+            border-radius: 6px;
+            background: rgba(255,255,255,0.8);
+            transition: border-color 0.3s ease, box-shadow 0.3s ease, background 0.3s ease;
+        }
+        .glass-card input:focus {
+            border-color: #007bff;
+            box-shadow: 0 0 0 3px rgba(0,123,255,0.2);
+            outline: none;
+            background: rgba(255,255,255,0.95);
+        }
+        .glass-card button {
+            margin-top: 20px;
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(90deg, #28a745, #22c55e);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: background 0.3s ease, transform 0.2s ease, box-shadow .2s ease;
+        }
+        .glass-card button:hover {
+            background: linear-gradient(90deg, #218838, #16a34a);
+            transform: scale(1.02);
+            box-shadow: 0 8px 18px rgba(34,197,94,0.35);
+        }
+
+        /* Transparent/glass message */
+        .message {
+            font-weight: 600;
+            margin-bottom: 20px;
+            padding: 12px 16px;
+            border-radius: 10px;
+            max-width: 550px;
+            margin: 0 auto 20px auto;
+            text-align: center;
+
+            background: rgba(255,255,255,0.22);
+            -webkit-backdrop-filter: blur(10px);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.35);
+            color: #ffffff;
+            text-shadow: 0 1px 3px rgba(0,0,0,.35);
+        }
+
+        /* Nested author section inside the form (kept subtle) */
+        .author-section {
+            border: 1px solid rgba(0,0,0,0.12);
+            padding: 15px;
+            margin-top: 20px;
+            border-radius: 8px;
+            background: rgba(255,255,255,0.65);
+        }
+        .author-section h3 {
+            margin-top: 0;
+            font-size: 16px;
+            color: #007bff;
+        }
+    </style>
+</head>
+<body>
+
+<!-- Sidebar -->
+<div class="sidebar">
+  <h4>Admin Dashboard</h4>
+  <a href="{{ url_for('admin_dashboard') }}/revenue" class="{% if action=='revenue' %}active{% endif %}">Revenue</a>
+  <a href="{{ url_for('admin_dashboard') }}/add" class="{% if action=='add' %}active{% endif %}">Add Book</a>
+  <a href="{{ url_for('admin_dashboard') }}/delete" class="{% if action=='delete' %}active{% endif %}">Delete Book</a>
+  <a href="{{ url_for('admin_dashboard') }}/changeprice" class="{% if action=='changeprice' %}active{% endif %}">Change Price</a>
+  <a href="{{ url_for('admin_dashboard') }}/updatestock" class="{% if action=='updatestock' %}active{% endif %}">Update Stock</a>
+  <a href="{{ url_for('admin_dashboard') }}/userdetails" class="{% if action=='userdetails' %}active{% endif %}">User Details</a>
+  <a href="{{ url_for('admin_dashboard') }}/orderdetails" class="{% if action=='orderdetails' %}active{% endif %}">Order Details</a>
+  <a href="{{ url_for('admin_dashboard') }}/changepass" class="{% if action=='changepass' %}active{% endif %}">Change Admin Password</a>
+</div>
+
+<!-- Content -->
+<div class="content">
+    <h2>Add Book</h2>
+
+    {% if message %}
+    <div class="message">
+        {{ message|safe }} <br>
+        {% if book_id %}📚 New Book ID: <strong>{{ book_id }}</strong><br>{% endif %}
+        {% if author_id %}✍ New Author ID: <strong>{{ author_id }}</strong>{% endif %}
+    </div>
+    {% endif %}
+
+    <form method="POST" class="glass-card">
+        <label>Book Title</label>
+        <input type="text" name="name" value="{{ request.form.get('name','') }}" required>
+
+        <label>ISBN</label>
+        <input type="text" name="isbn" value="{{ request.form.get('isbn','') }}" required>
+
+        <label>Price</label>
+        <input type="number" step="0.01" name="price" value="{{ request.form.get('price','') }}" required>
+
+        <label>Published Date</label>
+        <input type="date" name="published_date" value="{{ request.form.get('published_date','') }}" required>
+
+        <label>Stock</label>
+        <input type="number" name="stock" value="{{ request.form.get('stock','') }}" required>
+
+        <label>Author Name</label>
+        <input type="text" name="author_name" value="{{ request.form.get('author_name','') }}" required>
+
+        <label>Author Email</label>
+        <input type="email" name="author_email" value="{{ request.form.get('author_email','') }}" required>
+
+        {% if newAuthor %}
+        <div class="author-section">
+            <h3>New Author Information</h3>
+
+            <label>Nationality</label>
+            <input type="text" name="nationality" value="{{ request.form.get('nationality','') }}" required>
+
+            <label>Date of Birth</label>
+            <input type="date" name="birth_date" value="{{ request.form.get('birth_date','') }}" required>
+        </div>
+        {% endif %}
+
+        <button type="submit"> Add Book</button>
+    </form>
+</div>
+
+</body>
+</html>

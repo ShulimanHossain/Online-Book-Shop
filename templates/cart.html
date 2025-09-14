@@ -1,0 +1,124 @@
+{% extends "base.html" %}
+{% block content %}
+
+<!-- Fullscreen background layer (covers entire viewport) -->
+<div class="bg-fullscreen" aria-hidden="true"></div>
+
+<div class="cart-container flex flex-col items-center justify-center min-h-screen p-4">
+
+  <!-- Card -->
+  <div class="cart-card animate-fadeIn bg-white rounded-lg shadow-lg p-6 sm:p-8 w-full max-w-4xl">
+
+    <!-- Title -->
+    <h1 class="cart-title text-2xl sm:text-3xl font-bold text-indigo-600 mb-4 animate-bounce">Your Cart</h1>
+
+    {% if cart_book %}
+      <!-- Table -->
+      <div class="table-responsive overflow-x-auto mb-4">
+        <table class="cart-table w-full border border-gray-200">
+          <thead class="bg-indigo-100 text-indigo-800">
+            <tr>
+              <th class="px-4 py-2 text-left">Title</th>
+              <th class="px-4 py-2 text-left">Price</th>
+              <th class="px-4 py-2 text-left">Qty</th>
+              <th class="px-4 py-2 text-left">Subtotal</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for b in cart_book %}
+            <tr class="border-t border-gray-200">
+              <td class="px-4 py-2">{{ b.title }}</td>
+              <td class="px-4 py-2">৳ {{ '%.2f'|format(b.price) }}</td>
+              <td class="px-4 py-2">{{ session.get('cart')[b.book_id|string] }}</td>
+              <td class="px-4 py-2">৳ {{ '%.2f'|format(b.price * session.get('cart')[b.book_id|string]) }}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Total & Place Order -->
+      <div class="flex flex-col sm:flex-row justify-between items-center mt-4">
+        <h2 class="total text-xl sm:text-2xl font-semibold mb-3 sm:mb-0">Total: ৳ {{ '%.2f'|format(totalBill) }}</h2>
+        <form method="post" action="{{ url_for('placeorder') }}">
+          <button type="submit" class="btn-submit bg-green-600 text-white font-semibold py-2 px-4 rounded hover:bg-green-700 transition duration-200">
+            Place Order
+          </button>
+        </form>
+      </div>
+
+    {% else %}
+      <p class="text-gray-500 mt-4">Your cart is empty.</p>
+    {% endif %}
+
+  </div>
+</div>
+
+<!-- Embedded CSS -->
+<style>
+/* ===== Fullscreen background (same image as login) ===== */
+.bg-fullscreen{
+  position: fixed;
+  inset: 0;
+  background: url("{{ url_for('static', filename='images/two.jpg') }}") center / cover no-repeat;
+  z-index: 0;              /* below navbar (1100) and content (1) */
+  pointer-events: none;
+}
+
+/* Container (let image show through) */
+.cart-container {
+    font-family: 'Inter', sans-serif;
+    min-height: 100vh;
+    padding: 1rem;
+    position: relative;
+    z-index: 1;            /* above bg layer */
+    background: transparent; /* remove gradient so full image is visible */
+}
+
+/* Card */
+.cart-card {
+    background-color: white;
+    border-radius: 0.5rem;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+    padding: 1.5rem;
+    width: 100%;
+    max-width: 64rem; /* ~4xl */
+}
+
+/* Title */
+.cart-title {
+    font-size: 1.75rem;
+    font-weight: 800;
+    color: #6366f1;
+}
+
+/* Table */
+.cart-table { border-collapse: collapse; }
+.cart-table th, .cart-table td { padding: 0.75rem 1rem; text-align: left; }
+.cart-table th { background-color: #e0e7ff; color: #3730a3; font-weight: 600; }
+.cart-table tr:nth-child(even) { background-color: #f9fafb; }
+
+/* Buttons */
+.btn-submit {
+    background: linear-gradient(90deg, #10b981, #059669);
+    color: white;
+    font-weight: 600;
+    border-radius: 0.375rem;
+    border: 0;
+}
+.btn-submit:hover {
+    background: linear-gradient(90deg, #059669, #047857);
+    transform: scale(1.05);
+    box-shadow: 0 4px 15px rgba(5,118,87,0.3);
+}
+
+/* Animations */
+@keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-6px); } }
+/* .animate-bounce { animation: bounce 1s infinite; } */
+@keyframes fadeIn { 0% { opacity: 0; transform: translateY(20px); } 100% { opacity: 1; transform: translateY(0); } }
+.animate-fadeIn { animation: fadeIn 0.7s ease forwards; }
+
+/* Total text */
+.total { color: #111827; }
+</style>
+{% endblock %}

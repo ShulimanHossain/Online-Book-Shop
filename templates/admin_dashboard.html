@@ -1,0 +1,233 @@
+{% extends "base.html" %}
+{% block content %}
+<style>
+    /* Sidebar styling */
+    .sidebar {
+        width: 240px;
+        min-height: 100vh;
+        background: linear-gradient(to bottom right, #1f2937, #111827);
+        padding: 1rem;
+        position: fixed;
+        top: 0;
+        left: 0;
+    }
+    .sidebar h4 {
+        color: #fff;
+        font-size: 1.25rem;
+        font-weight: bold;
+        margin-bottom: 1rem;
+    }
+    .sidebar a {
+        display: block;
+        color: #d1d5db;
+        padding: 0.6rem 1rem;
+        border-radius: 0.5rem;
+        text-decoration: none;
+        margin-bottom: 0.4rem;
+        transition: all 0.3s;
+    }
+    .sidebar a:hover {
+        background: #374151;
+        color: #fff;
+    }
+    .sidebar a.active {
+        background: #2563eb;
+        color: #fff;
+        font-weight: 600;
+    }
+
+    /* Content area */
+    .content {
+        margin-left: 260px;
+        padding: 2rem;
+        font-family: 'Segoe UI', Arial, sans-serif;
+        background: linear-gradient(135deg, #f0f4ff, #fef9f9);
+        min-height: 100vh;
+    }
+    h2 {
+        text-align: center;
+        color: #333;
+        margin-bottom: 20px;
+    }
+
+    .content {
+        background: url("{{ url_for('static', filename='images/two.jpg') }}") no-repeat center center fixed;
+        background-size: cover;
+        font-family: 'Segoe UI', Arial, sans-serif;
+    }
+    form {
+        background: #fff;
+        padding: 25px;
+        border-radius: 12px;
+        box-shadow: 0 6px 20px rgba(0,0,0,0.08);
+        max-width: 550px;
+        margin: 0 auto;
+    }
+    label {
+        display: block;
+        margin-top: 15px;
+        font-weight: 600;
+        color: #444;
+    }
+    input, textarea, select {
+        width: 100%;
+        padding: 10px 12px;
+        margin-top: 6px;
+        border: 1px solid #ccc;
+        border-radius: 6px;
+        transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    }
+    input:focus, textarea:focus, select:focus {
+        border-color: #007bff;
+        box-shadow: 0 0 0 3px rgba(0,123,255,0.2);
+        outline: none;
+    }
+    button {
+        margin-top: 20px;
+        width: 100%;
+        padding: 12px;
+        background: #28a745;
+        color: white;
+        border: none;
+        border-radius: 8px;
+        font-size: 16px;
+        cursor: pointer;
+        font-weight: 600;
+        transition: background 0.3s ease, transform 0.2s ease;
+    }
+    button:hover {
+        background: #218838;
+        transform: scale(1.02);
+    }
+    .message {
+        font-weight: 600;
+        color: #155724;
+        margin-bottom: 20px;
+        padding: 12px;
+        border: 1px solid #c3e6cb;
+        border-radius: 8px;
+        background: #d4edda;
+        box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+        max-width: 550px;
+        margin: 0 auto 20px auto;
+    }
+    .author-section {
+        border: 1px solid #ddd;
+        padding: 15px;
+        margin-top: 20px;
+        border-radius: 8px;
+        background: #fafafa;
+    }
+    .author-section h3 {
+        margin-top: 0;
+        font-size: 16px;
+        color: #007bff;
+    }
+</style>
+
+<!-- Sidebar -->
+<div class="sidebar">
+  <h4>Admin Dashboard</h4>
+  <a href="{{ url_for('admin_dashboard') }}/revenue" class="{% if action=='revenue' %}active{% endif %}">Revenue</a>
+  <a href="{{ url_for('admin_dashboard') }}/add" class="{% if action=='add' %}active{% endif %}">Add Book</a>
+  <a href="{{ url_for('admin_dashboard') }}/delete" class="{% if action=='delete' %}active{% endif %}">Delete Book</a>
+  <a href="{{ url_for('admin_dashboard') }}/changeprice" class="{% if action=='changeprice' %}active{% endif %}">Change Price</a>
+  <a href="{{ url_for('admin_dashboard') }}/updatestock" class="{% if action=='updatestock' %}active{% endif %}">Update Stock</a>
+  <a href="{{ url_for('admin_dashboard') }}/userdetails" class="{% if action=='userdetails' %}active{% endif %}">User Details</a>
+  <a href="{{ url_for('admin_dashboard') }}/orderdetails" class="{% if action=='orderdetails' %}active{% endif %}">Order Details</a>
+  <a href="{{ url_for('admin_dashboard') }}/changepass" class="{% if action=='changepass' %}active{% endif %}">Change Admin Password</a>
+</div>
+
+<!-- Content Area -->
+<div class="content">
+  {% if action %}
+    <h2>{{ action | capitalize }}</h2>
+
+    {% if action == 'revenue' %}
+      {% if result %}<pre>{{ result | tojson(indent=2) }}</pre>
+      {% else %}<p class="text-muted text-center">No revenue data.</p>{% endif %}
+
+    {% elif action == 'add' %}
+      {% if message %}<div class="message">{{ message }}</div>{% endif %}
+      <form method="post">
+        <label>Title</label>
+        <input name="name" required>
+        <label>Author ID</label>
+        <input name="author_id" required>
+        <label>ISBN</label>
+        <input name="isbn" required>
+        <label>Price</label>
+        <input name="price" type="number" step="0.01" required>
+        <label>Published Date</label>
+        <input name="published_date" type="date" required>
+        <label>Stock</label>
+        <input name="stock" type="number" required>
+        <button type="submit">Add Book</button>
+      </form>
+
+    {% elif action == 'delete' %}
+      {% if message %}<div class="message">{{ message }}</div>{% endif %}
+      <form method="post">
+        <label>Book ID</label>
+        <input name="book_id" required>
+        <button type="submit" style="background:#dc3545;">Delete</button>
+      </form>
+
+    {% elif action == 'changeprice' %}
+      {% if message %}<div class="message">{{ message }}</div>{% endif %}
+      <form method="post">
+        <label>Book ID</label>
+        <input name="book_id" required>
+        <label>New Price</label>
+        <input name="newprice" type="number" step="0.01" required>
+        <button type="submit" style="background:#6c757d;">Update Price</button>
+      </form>
+
+    {% elif action == 'updatestock' %}
+      {% if message %}<div class="message">{{ message }}</div>{% endif %}
+      <form method="post">
+        <label>Book ID</label>
+        <input name="book_id" required>
+        <label>New Stock</label>
+        <input name="newstock" type="number" required>
+        <button type="submit" style="background:#17a2b8;">Update Stock</button>
+      </form>
+
+    {% elif action == 'userdetails' %}
+      <form method="post">
+        <label>User ID</label>
+        <input name="user_id" required>
+        <button type="submit" style="background:#17a2b8;">Fetch User</button>
+      </form>
+      {% if userinfo %}<pre>{{ userinfo | tojson(indent=2) }}</pre>{% endif %}
+
+    {% elif action == 'orderdetails' %}
+      {% if orderinfo %}
+        <div class="table-responsive mt-4">
+          <table class="table table-striped table-hover align-middle">
+            <thead class="table-light">
+              <tr>{% for k in orderinfo[0].keys() %}<th>{{ k }}</th>{% endfor %}</tr>
+            </thead>
+            <tbody>{% for row in orderinfo %}<tr>{% for v in row.values() %}<td>{{ v }}</td>{% endfor %}</tr>{% endfor %}</tbody>
+          </table>
+        </div>
+      {% else %}
+        <p class="text-muted text-center">No orders found.</p>
+      {% endif %}
+
+    {% elif action == 'changepass' %}
+      {% if message %}<div class="message">{{ message }}</div>{% endif %}
+      <form method="post">
+        <label>Admin ID</label>
+        <input name="admin_id" required>
+        <label>New Password</label>
+        <input name="newpassword" type="password" required>
+        <button type="submit" style="background:#ffc107; color:#000;">Change Password</button>
+      </form>
+    {% endif %}
+
+  {% else %}
+    <p class="text-muted text-center mt-5">Select a feature from the sidebar to get started.</p>
+  {% endif %}
+</div>
+{% endblock %}

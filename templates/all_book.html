@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block content %}
+
+<style>
+body {
+    background: url("{{ url_for('static', filename='images/two.jpg') }}") no-repeat center center fixed;
+    background-size: cover;
+    font-family: 'Segoe UI', Arial, sans-serif;
+}
+.card-body a {
+    display: block; /* make whole book info clickable */
+}
+</style>
+
+<h1 class="text-center text-white mb-4">All Books</h1>
+<div class="row row-cols-1 row-cols-md-3 g-3">
+    {% for b in allbook %}
+    <div class="col">
+        <div class="card h-100 shadow-sm">
+            <div class="card-body">
+                <a href="{{ url_for('book_detail', book_id=b.book_id) }}" class="text-decoration-none text-dark">
+                    <div class="fw-semibold">{{ b.title }}</div>
+                    <div class="text-muted small">by {{ b.author_name if b.author_name else '' }}</div>
+                    <div class="mt-2">Price: ৳ {{ '%.2f'|format(b.price) if b.price is not none else 'N/A' }}</div>
+                </a>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+{% endblock %}

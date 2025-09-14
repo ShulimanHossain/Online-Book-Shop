@@ -1,0 +1,162 @@
+{% extends "base.html" %}
+{% block content %}
+<style>
+  /* ===== Full-page background image (two.jpg) ===== */
+  html, body { height: 100%; }
+  body { background: transparent !important; font-family: 'Segoe UI', Arial, sans-serif; }
+  html::before{
+    content:"";
+    position: fixed;
+    inset: 0;
+    background: url("{{ url_for('static', filename='images/two.jpg') }}") center / cover no-repeat fixed;
+    z-index: 0;             /* below navbar, sidebar, and content */
+    pointer-events: none;
+  }
+
+  /* ===== Sidebar (opaque for readability) ===== */
+  .sidebar {
+      width: 240px;
+      min-height: 100vh;
+      background: linear-gradient(to bottom right, #1f2937, #111827);
+      padding: 1rem;
+      position: fixed;
+      top: 0; left: 0;
+      z-index: 2; /* above bg image */
+  }
+  .sidebar h4 { color:#fff; font-size:1.25rem; font-weight:bold; margin-bottom:1rem; }
+  .sidebar a {
+      display:block; color:#d1d5db; padding:0.6rem 1rem; border-radius:0.5rem;
+      text-decoration:none; margin-bottom:0.4rem; transition:all .3s;
+  }
+  .sidebar a:hover { background:#374151; color:#fff; }
+  .sidebar a.active { background:#2563eb; color:#fff; font-weight:600; }
+
+  /* ===== Content over the photo ===== */
+  .content {
+      margin-left: 260px;
+      padding: 2rem;
+      padding-top: 80px;     /* space for fixed navbar from base.html */
+      min-height: 100vh;
+      position: relative;
+      z-index: 1;            /* above bg image */
+      background: transparent !important; /* remove old gradient */
+  }
+
+  /* Title readable on photo */
+  h1 {
+      text-align: center;
+      color: #ffffff;
+      margin-bottom: 20px;
+      text-shadow: 0 2px 6px rgba(0,0,0,.35);
+  }
+
+  /* ===== Glass/transparent cards ===== */
+  .glass-card {
+      background: rgba(255,255,255,0.22);
+      -webkit-backdrop-filter: blur(10px);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255,255,255,0.35);
+      border-radius: 12px;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.18);
+      max-width: 500px;
+      margin: 0 auto 20px auto;
+      padding: 25px;
+      color: #111827;
+  }
+  .glass-output {
+      background: rgba(255,255,255,0.22);
+      -webkit-backdrop-filter: blur(10px);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255,255,255,0.35);
+      border-radius: 12px;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.18);
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 20px;
+      color: #111827;
+  }
+
+  /* Form inputs/buttons inside glass */
+  .glass-card input {
+      width: 100%;
+      padding: 10px 12px;
+      margin-top: 10px;
+      border: 1px solid rgba(0,0,0,0.15);
+      border-radius: 6px;
+      background: rgba(255,255,255,0.8);
+      transition: border-color .3s, box-shadow .3s, background .3s;
+  }
+  .glass-card input:focus {
+      border-color: #007bff;
+      box-shadow: 0 0 0 3px rgba(0,123,255,0.2);
+      outline: none;
+      background: rgba(255,255,255,0.95);
+  }
+  .glass-card button {
+      margin-top: 20px;
+      width: 100%;
+      padding: 12px;
+      background: #4f46e5;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: background 0.3s ease, transform 0.2s ease, box-shadow .2s ease;
+  }
+  .glass-card button:hover {
+      background: #4338ca;
+      transform: scale(1.02);
+      box-shadow: 0 8px 18px rgba(0,0,0,0.25);
+  }
+
+  /* Code block output */
+  pre {
+      white-space: pre-wrap;
+      word-wrap: break-word;
+      overflow-x: auto;
+      margin: 0;
+  }
+
+  /* Empty-state text on photo */
+  .text-gray-500 {
+      text-align: center;
+      margin-top: 20px;
+      color: #f3f4f6;
+      font-weight: 600;
+      text-shadow: 0 1px 3px rgba(0,0,0,.35);
+  }
+</style>
+
+<!-- Sidebar -->
+<div class="sidebar">
+  <h4>Admin Dashboard</h4>
+  <a href="{{ url_for('admin_dashboard') }}/revenue" class="{% if action=='revenue' %}active{% endif %}">Revenue</a>
+  <a href="{{ url_for('admin_dashboard') }}/add" class="{% if action=='add' %}active{% endif %}">Add Book</a>
+  <a href="{{ url_for('admin_dashboard') }}/delete" class="{% if action=='delete' %}active{% endif %}">Delete Book</a>
+  <a href="{{ url_for('admin_dashboard') }}/changeprice" class="{% if action=='changeprice' %}active{% endif %}">Change Price</a>
+  <a href="{{ url_for('admin_dashboard') }}/updatestock" class="{% if action=='updatestock' %}active{% endif %}">Update Stock</a>
+  <a href="{{ url_for('admin_dashboard') }}/userdetails" class="{% if action=='userdetails' %}active{% endif %}">User Details</a>
+  <a href="{{ url_for('admin_dashboard') }}/orderdetails" class="{% if action=='orderdetails' %}active{% endif %}">Order Details</a>
+  <a href="{{ url_for('admin_dashboard') }}/changepass" class="{% if action=='changepass' %}active{% endif %}">Change Admin Password</a>
+</div>
+
+<!-- Content -->
+<div class="content">
+  <h1>User Details</h1>
+
+  <form method="post" class="glass-card">
+      <input type="text" name="user_id" placeholder="User ID" required>
+      <button type="submit">Fetch</button>
+  </form>
+
+  {% if userinfo %}
+      <div class="glass-output">
+        <pre>{{ userinfo | tojson(indent=2) }}</pre>
+      </div>
+  {% elif userinfo is not none %}
+      <p class="text-gray-500">No records found.</p>
+  {% endif %}
+</div>
+{% endblock %}

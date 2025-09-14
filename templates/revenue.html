@@ -1,0 +1,101 @@
+{% extends "base.html" %}
+{% block content %}
+
+<!-- Sidebar -->
+<div class="sidebar">
+  <h4>Admin Dashboard</h4>
+  <a href="{{ url_for('admin_dashboard') }}/revenue" class="active">Revenue</a>
+  <a href="{{ url_for('admin_dashboard') }}/add">Add Book</a>
+  <a href="{{ url_for('admin_dashboard') }}/delete">Delete Book</a>
+  <a href="{{ url_for('admin_dashboard') }}/changeprice">Change Price</a>
+  <a href="{{ url_for('admin_dashboard') }}/updatestock">Update Stock</a>
+  <a href="{{ url_for('admin_dashboard') }}/userdetails">User Details</a>
+  <a href="{{ url_for('admin_dashboard') }}/orderdetails">Order Details</a>
+  <a href="{{ url_for('admin_dashboard') }}/changepass">Change Admin Password</a>
+</div>
+
+<!-- Content Area -->
+<div class="content">
+  <h1 class="text-4xl font-bold text-center mb-8 text-white drop-shadow">Revenue Dashboard</h1>
+
+  {% if months and revenues %}
+  <div class="glass-card shadow-lg rounded-2xl p-6 max-w-3xl mx-auto">
+      <table class="min-w-full border border-gray-300 bg-white/85 rounded-xl overflow-hidden">
+          <thead class="bg-gray-100">
+              <tr>
+                  <th class="py-2 px-4 border-b">Month</th>
+                  <th class="py-2 px-4 border-b">Revenue (৳)</th>
+              </tr>
+          </thead>
+          <tbody>
+              {% for i in range(months|length) %}
+              <tr class="text-center">
+                  <td class="py-2 px-4 border-b">{{ months[i] }}</td>
+                  <td class="py-2 px-4 border-b">{{ revenues[i] }}</td>
+              </tr>
+              {% endfor %}
+          </tbody>
+      </table>
+  </div>
+  {% else %}
+      <p class="text-center text-white/90 mt-6 drop-shadow">No revenue data available.</p>
+  {% endif %}
+</div>
+
+<style>
+/* --- FORCE a full-page background image --- */
+html, body { height: 100%; }
+body { background: transparent !important; } /* override base's #f8f9fa */
+html::before{
+  content:"";
+  position: fixed;
+  inset: 0;
+  background: url("{{ url_for('static', filename='images/two.jpg') }}") center / cover no-repeat;
+  z-index: 0; /* sits beneath sidebar/content/nav */
+  pointer-events: none;
+}
+
+/* Sidebar styling (kept opaque for readability) */
+.sidebar {
+  width: 240px;
+  min-height: 100vh;
+  background: linear-gradient(to bottom right, #1f2937, #111827);
+  padding: 1rem;
+  position: fixed;
+  top: 0; left: 0;
+  z-index: 2; /* above bg image */
+}
+.sidebar h4 { color:#fff; font-size:1.25rem; font-weight:700; margin-bottom:1rem; }
+.sidebar a {
+  display:block; color:#d1d5db; padding:0.6rem 1rem; border-radius:0.5rem;
+  text-decoration:none; margin-bottom:0.4rem; transition:all .3s;
+}
+.sidebar a:hover{ background:#374151; color:#fff; }
+.sidebar a.active{ background:#2563eb; color:#fff; font-weight:600; }
+
+/* Content area over the image */
+.content{
+  margin-left: 260px;
+  padding: 2rem;
+  padding-top: 80px;     /* room for fixed navbar from base.html */
+  min-height: 100vh;
+  position: relative;
+  z-index: 1;            /* above bg image */
+  background: transparent !important; /* ensure no white fill */
+  backdrop-filter: none;
+}
+
+/* Optional: glass panel for the table */
+.glass-card{
+  background: rgba(255,255,255,0.6);
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+  border-radius: 1rem;
+}
+
+/* Small drop shadow helper (already used above) */
+.drop-shadow{
+  text-shadow: 0 2px 6px rgba(0,0,0,.35);
+}
+</style>
+{% endblock %}

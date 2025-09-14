@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="card shadow-sm mb-4">
+    <div class="card-body">
+        <h2>{{ book.title }}</h2>
+        <p><strong>Author:</strong> {{ book.author_name }} 
+           {% if book.author_rating %}- ★ {{ book.author_rating }}{% endif %}
+        </p>
+        <p><strong>Price:</strong> ৳ {{ '%.2f'|format(book.price) }}</p>
+        <p><strong>Stock:</strong> {{ book.stock }}</p>
+        <p><strong>ISBN:</strong> {{ book.isbn }}</p>
+        <p><strong>Published Date:</strong> {{ book.published_date }}</p>
+    </div>
+</div>
+
+<h4>Reviews:</h4>
+{% if reviews %}
+    {% for r in reviews %}
+        <div class="border rounded p-2 mb-2">
+            <strong>{{ r.username }}</strong>: {{ r.review_text }} - ★ {{ r.rating }}
+        </div>
+    {% endfor %}
+{% else %}
+    <p>No reviews yet.</p>
+{% endif %}
+
+{% endblock %}
