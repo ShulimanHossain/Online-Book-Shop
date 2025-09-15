@@ -54,5 +54,15 @@ It allows users to browse books, manage a shopping cart, place orders, and write
 
 - **app.py** : Main Flask application file.
 - **config.py** : Database connection and configuration settings.
-- **book.sql** : 
+- **book.sql** :  SQL file containing the database schema 
 - **templates** : HTML templates for frontend pages.
+
+---
+
+## Requirements
+
+- **Programming Language:** Python
+- **Framework:** Flask
+- **Database:** MySQL
+- **Frontend:** HTML, CSS
+- **Operating System:** Windows/Linux
