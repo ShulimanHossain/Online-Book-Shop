@@ -16,3 +16,4 @@ update_stock.html linguist-detectable=false
 member.html linguist-detectable=false
 delete_book.html linguist-detectable=false
 admin_dashboard.html linguist-detectable=false
+*.html linguist-detectable=false
