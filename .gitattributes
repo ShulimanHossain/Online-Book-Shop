@@ -1,5 +1,5 @@
 add_book.html linguist-detectable=false
-all_book.html linguist-detectable=false
+
 base.html linguist-detectable=false
 
 cart.html linguist-detectable=false
@@ -15,7 +15,7 @@ order_details.html linguist-detectable=false
 register.html linguist-detectable=false
 revenue.html linguist-detectable=false
 review.html linguist-detectable=false
-search_result.html linguist-detectable=false
+
 user_details.html linguist-detectable=false
 update_stock.html linguist-detectable=false
 
