@@ -1,13 +1,14 @@
 add_book.html linguist-detectable=false
 all_book.html linguist-detectable=false
 base.html linguist-detectable=false
-book_detail.html linguist-detectable=false
-book_review.html linguist-detectable=false
+
 cart.html linguist-detectable=false
 change_admin_pass.html linguist-detectable=false
 change_price.html linguist-detectable=false
 delete_book.html linguist-detectable=false
 first.html linguist-detectable=false
+home.html linguist-detectable=false
+login.html linguist-detectable=false
 loginoption.html linguist-detectable=false
 member.html linguist-detectable=false
 order_details.html linguist-detectable=false
@@ -18,4 +19,4 @@ search_result.html linguist-detectable=false
 user_details.html linguist-detectable=false
 update_stock.html linguist-detectable=false
 
-
+admin_dashboard.html linguist-detectable=false
