@@ -12,3 +12,7 @@ book_review.html linguist-detectable=false
 login.html linguist-detectable=false
 change_price.html linguist-detectable=false
 register.html linguist-detectable=false
+update_stock.html linguist-detectable=false
+member.html linguist-detectable=false
+delete_book.html linguist-detectable=false
+admin_dashboard.html linguist-detectable=false
